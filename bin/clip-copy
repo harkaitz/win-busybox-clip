@@ -1,0 +1,30 @@
+#!/bin/sh -e
+##:
+#h: Usage: clip-copy < TEXT > TEXT
+#h:
+#h: Read from the standard input and put it in the clipboard.
+#h:
+#h: Supports: clip.exe (windows) xclip (Xorg).
+##:
+clip_copy() {
+    local tmp="$(mktemp)"
+    if cat > "${tmp}"; then
+        if which "clip.exe" >/dev/null 2>&1; then
+            clip.exe < "${tmp}"
+        elif which "xclip" >/dev/null 2>&1; then
+            xclip -i "${tmp}" -selection "clipboard"
+        else
+            echo >&2 "clip-copy: error: Please install xclip or clip."
+            return 1
+        fi
+        test ! -t 1 || clear
+        cat "${tmp}"
+    fi
+    rm -f "${tmp}"
+}
+if test @"${SCRNAME:-$(basename "$0")}" = @"clip-copy"; then
+    case "${1}" in
+        -h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)         clip_copy "$@"; exit 0;;
+    esac
+fi
