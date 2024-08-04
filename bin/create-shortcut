@@ -1,0 +1,97 @@
+#!/bin/sh -e
+##:
+#h: Usage: create-shortcut [OPTS...] PROGRAM ARGS...
+#h:
+#h: Create shortcut in "/usr/share/applications" (GNU/Linux) and
+#h: desktop (MS Windows).
+#h:
+#h:     -n NAME       : Shortcut name.
+#h:     -m COMMENT    : Add comment.
+#h:     -c X-Category : Set category (GNU/Linux). 
+#h:     -t            : Open terminal (GNU/Linux).
+#h:
+#h: TODO: Icon.
+##:
+create_shortcut() {
+    local OPTIND optopt
+    local file=''
+    local name=''
+    local comment=''
+    local category=''
+    local terminal='false'
+    local applications_linux="/usr/share/applications"
+    
+    ## Parse command line arguments.
+    while getopts "f:n:m:c:t" optopt; do
+        case $optopt in
+            f)  file="${OPTARG}";;
+            n)  name="${OPTARG}";;
+            m)  comment="${OPTARG}";;
+            c)  category="${OPTARG}";;
+            t)  terminal="true";;
+            \?) return 1;;
+        esac
+    done
+    shift $(( $OPTIND - 1 ))
+    if test ! -n "$1"; then
+        echo >&2 "error: Please specify a program name."
+        return 1
+    fi
+    name="${name:-$(basename "$1" | sed 's|\..*||')}"
+    file="${file:-$(basename "$1" | sed 's|\..*||')}"
+    program="$(which "$1" 2>&1 || true)"
+    if test ! -n "${program}"; then
+        echo >&2 "error: $1: Program not found."
+        return 1
+    fi
+    shift
+    
+    
+    ## Create shortcut.
+    case "$(uname -s)" in
+        Linux)
+            echo "Creating ${applications_linux}/${file}.desktop ..."
+            sudo tee "${applications_linux}/${file}.desktop" >/dev/null <<-EOF
+		[Desktop Entry]
+		Name=${name}
+		Comment=${comment:-${name}}
+		GenericName=${name}
+		X-GNOME-FullName=${name}
+		Exec=${program} $*
+		Terminal=${terminal}
+		Type=application${category:+
+		Categories=${category}}
+		StartupWMClass=${file}
+		StartupNotify=true
+		EOF
+            ;;
+        Windows_NT)
+            echo "Creating ${USERPROFILE}/Desktop/${name}.lnk ..."
+            cat > "${TEMP}/shortcut.vbs" <<-EOF
+		Set oWS = WScript.CreateObject("WScript.Shell")
+		sLinkFile = "${USERPROFILE}/Desktop/${name}.lnk"
+		Set oLink = oWS.CreateShortcut(sLinkFile)
+		oLink.TargetPath = "${program}"
+		oLink.Arguments = "$*"
+		oLink.WorkingDirectory = "$(dirname ${program})"
+		oLink.Description = "${comment}"
+		oLink.Save
+		EOF
+            mkdir -p "${USERPROFILE}/Desktop"
+            cscript //B "${TEMP}/shortcut.vbs"
+            rm -f "${TEMP}/shortcut.vbs"
+            ;;
+        *)
+            echo >&2 "error: Unsupported platform: $(uname -s)"
+            return 1
+            ;;
+    esac
+
+    
+}
+if test @"${SCRNAME:-$(basename "$0")}" = @"create-shortcut"; then
+    case "${1}" in
+        ''|-h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)            create_shortcut "$@"; exit 0;;
+    esac
+fi

@@ -22,4 +22,5 @@ install: install-sh
 install-sh:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp bin/clip-copy        $(DESTDIR)$(PREFIX)/bin
+	cp bin/create-shortcut  $(DESTDIR)$(PREFIX)/bin
 ## -- BLOCK:sh --

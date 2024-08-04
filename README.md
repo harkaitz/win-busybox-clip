@@ -13,6 +13,20 @@ clip-copy
     
     Supports: clip.exe (windows) xclip (Xorg).
 
+create-shortcut
+
+    Usage: create-shortcut [OPTS...] PROGRAM ARGS...
+    
+    Create shortcut in "/usr/share/applications" (GNU/Linux) and
+    desktop (MS Windows).
+    
+        -n NAME       : Shortcut name.
+        -m COMMENT    : Add comment.
+        -c X-Category : Set category (GNU/Linux). 
+        -t            : Open terminal (GNU/Linux).
+    
+    TODO: Icon.
+
 ## Collaborating
 
 For making bug reports, feature requests and donations visit
