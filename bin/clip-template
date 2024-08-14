@@ -1,0 +1,38 @@
+#!/bin/sh -e
+##:
+#h: Usage: clip-template TEXT
+#h:
+#h: This program first prints the TEXT removing the first and last
+#h: lines. This text should contain some numerated fields in the
+#h: following form: (NN)[FIELD]
+#h:
+#h: The program asks for input interactively, then it searches it
+#h: in the text and if found places it in the clipboard.
+##:
+clip_template() {
+    local txt fld= num
+    txt="$(echo "$1" | sed 's|^	*||;1d;$d')"
+    while true; do
+        clear
+        echo ""
+        echo "${txt}"
+        echo ""
+        echo "In clipboard: ${fld}"
+        echo -n "Select (q to quit): "
+        read num
+        if test @"${num}" = @"q"; then
+            break
+        fi
+        local sed1='[^]]*'
+        local sed2='s|.*('${num}') *\[\('${sed1}'\)\].*|\1|p'
+        local sed3='s|^ *||;s| *$||'
+        fld="$(echo "${txt}" | sed -n "${sed2}" | sed "${sed3}")"
+        echo -n "${fld}" | clip-copy >/dev/null
+    done
+}
+if test @"${SCRNAME:-$(basename "$0")}" = @"clip-template"; then
+    case "${1}" in
+        ''|-h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)            clip_template "$@"; exit 0;;
+    esac
+fi

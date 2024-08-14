@@ -13,6 +13,17 @@ clip-copy
     
     Supports: clip.exe (windows) xclip (Xorg).
 
+clip-template
+
+    Usage: clip-template TEXT
+    
+    This program first prints the TEXT removing the first and last
+    lines. This text should contain some numerated fields in the
+    following form: (NN)[FIELD]
+    
+    The program asks for input interactively, then it searches it
+    in the text and if found places it in the clipboard.
+
 create-shortcut
 
     Usage: create-shortcut [OPTS...] PROGRAM ARGS...
