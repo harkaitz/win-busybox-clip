@@ -13,6 +13,7 @@ clip_copy() {
             clip.exe < "${tmp}"
         elif which "xclip" >/dev/null 2>&1; then
             xclip -i "${tmp}" -selection "clipboard"
+            xclip -i "${tmp}" -selection "primary"
         else
             echo >&2 "clip-copy: error: Please install xclip or clip."
             return 1
