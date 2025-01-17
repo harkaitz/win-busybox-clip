@@ -1,7 +1,7 @@
 .POSIX:
 .SUFFIXES:
 .PHONY: all clean install check
-PROJECT   =compat-1
+PROJECT   =win-busybox-clip
 VERSION   =1.0.0
 PREFIX    =/usr/local
 
@@ -20,6 +20,5 @@ install: install-sh
 install-sh:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp bin/clip-copy $(DESTDIR)$(PREFIX)/bin
-	cp bin/create-shortcut $(DESTDIR)$(PREFIX)/bin
 	cp bin/clip-template $(DESTDIR)$(PREFIX)/bin
 ## -- BLOCK:sh --

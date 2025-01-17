@@ -1,7 +1,8 @@
-COMPATIVILITY SCRIPTS - COLLECTION 1
+Clipboard - Unix/Busybox for Windows
 ====================================
 
-Compativility wrapper collection.
+Shell scripts for managing the clipboard in UNIX X11 and MS Windows
+(Busybox for Windows) machines.
 
 ## Help
 
@@ -24,23 +25,9 @@ clip-template
     The program asks for input interactively, then it searches it
     in the text and if found places it in the clipboard.
 
-create-shortcut
-
-    Usage: create-shortcut [OPTS...] PROGRAM ARGS...
-    
-    Create shortcut in "/usr/share/applications" (GNU/Linux) and
-    desktop (MS Windows).
-    
-        -n NAME       : Shortcut name.
-        -m COMMENT    : Add comment.
-        -c X-Category : Set category (GNU/Linux). 
-        -t            : Open terminal (GNU/Linux).
-    
-    TODO: Icon.
-
 ## Collaborating
 
-For making bug reports, feature requests and donations visit
+For making bug reports, feature requests, support or consulting visit
 one of the following links:
 
 1. [gemini://harkadev.com/oss/](gemini://harkadev.com/oss/)
